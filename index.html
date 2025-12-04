@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz Gamificado — Algoritmos (4º ano)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header aria-label="Cabeçalho">
+      <div class="brand">
+        <span class="badge">EducaFácil — Quiz</span>
+        <span aria-live="polite" class="muted">Algoritmos para 4º ano</span>
+      </div>
+      <button id="toggle-contrast" class="ac-btn" aria-pressed="false" aria-label="Alternar alto contraste">
+        Alto contraste
+      </button>
+    </header>
+
+    <section class="game" role="main" aria-labelledby="h1">
+      <div class="stars" aria-hidden="true">
+        <span style="top:14%;left:6%;animation-delay:.2s"></span>
+        <span style="top:38%;left:88%;animation-delay:.6s"></span>
+        <span style="top:70%;left:20%;animation-delay:1s"></span>
+        <span style="top:82%;left:62%;animation-delay:1.4s"></span>
+      </div>
+
+      <div class="hero">
+        <div>
+          <h1 id="h1">Introdução a Algoritmos e Repetições</h1>
+          <p>Responda e ganhe pontos. Acertar em sequência aumenta seu combo!</p>
+
+          <div class="statbar">
+            <span class="chip">Jogador: <span id="playerNameLabel">—</span></span>
+            <span class="chip">Pontuação: <span id="score" class="score">0</span></span>
+            <span class="chip">Combo: <span id="combo">x0</span></span>
+            <span class="chip">Questão <span id="qnum">0</span>/<span id="qtotal">0</span></span>
+            <span class="chip">Acertos: <span id="hits">0</span></span>
+          </div>
+
+          <div class="progress" aria-label="Progresso das questões" title="Progresso das questões">
+            <span id="progressbar"></span>
+          </div>
+        </div>
+
+        <div class="start" id="startBox">
+          <div>
+            <p style="margin:0 0 8px">Digite seu nome e clique em Iniciar.</p>
+            <input id="playerName" class="name-input" type="text" maxlength="20"
+                   placeholder="Seu nome ou apelido" />
+            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+              <button id="startBtn" class="pill primary">Iniciar</button>
+              <button id="reviewBtn" class="pill ghost"
+                      aria-label="Abrir relatório da última sessão">Último relatório</button>
+              <button id="rankBtn" class="pill ghost"
+                      aria-label="Abrir ranking geral">Ver ranking</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="main">
+        <article class="card" aria-live="polite">
+          <h2 class="q-title" id="qtitle">Clique em Iniciar para começar.</h2>
+          <div class="answers" id="answers" role="group" aria-labelledby="qtitle"></div>
+
+          <div class="controls">
+            <div class="info-text">
+              Dica: pense sempre nos passos em ordem, como uma receita.
+            </div>
+            <div class="foot">
+              <button id="skipBtn" class="pill" disabled>Pular</button>
+              <button id="nextBtn" class="pill primary" disabled>Próxima</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal Feedback -->
+  <div class="modal-backdrop" id="fb-backdrop" role="dialog" aria-modal="true"
+       aria-labelledby="fb-title" aria-hidden="true">
+    <div class="modal" id="fb-modal">
+      <header><strong id="fb-title">Feedback</strong></header>
+      <div class="content" id="fb-content"></div>
+      <div class="actions">
+        <button class="pill" id="fb-close">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Relatório -->
+  <div class="modal-backdrop" id="rep-backdrop" role="dialog" aria-modal="true"
+       aria-labelledby="rep-title" aria-hidden="true">
+    <div class="modal" id="rep-modal">
+      <header><strong id="rep-title">Relatório da sessão</strong></header>
+      <div class="content" id="rep-content"></div>
+      <div class="actions">
+        <button class="pill" id="rep-close">Fechar</button>
+        <button class="pill primary" id="rep-download">Baixar .json</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Ranking -->
+  <div class="modal-backdrop" id="rank-backdrop" role="dialog" aria-modal="true"
+       aria-labelledby="rank-title" aria-hidden="true">
+    <div class="modal" id="rank-modal">
+      <header><strong id="rank-title">Ranking geral</strong></header>
+      <div class="content" id="rank-content"></div>
+      <div class="actions">
+        <button class="pill" id="rank-close">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
