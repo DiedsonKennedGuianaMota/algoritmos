@@ -1,21 +1,21 @@
 // ===== CONFIGURAÇÕES =====
 const SERVER_URL = 'https://algoritmos-hglz.onrender.com';
 
-// ===== AVATARES (10 OPÇÕES SIMPLES COM EMOJI) =====
+// ===== AVATARES (10 OPÇÕES) =====
 const AVATARS = [
-  { id: 'robô', icon: '🤖' },
-  { id: 'gatinho', icon: '🐱' },
+  { id: 'robô',     icon: '🤖' },
+  { id: 'gatinho',  icon: '🐱' },
   { id: 'cachorro', icon: '🐶' },
-  { id: 'dinossauro', icon: '🦕' },
-  { id: 'estrela', icon: '⭐' },
-  { id: 'foguete', icon: '🚀' },
+  { id: 'dinoss',   icon: '🦕' },
+  { id: 'estrela',  icon: '⭐' },
+  { id: 'foguete',  icon: '🚀' },
   { id: 'controle', icon: '🎮' },
-  { id: 'lápis', icon: '✏️' },
-  { id: 'livro', icon: '📘' },
-  { id: 'coroa', icon: '👑' }
+  { id: 'lapis',    icon: '✏️' },
+  { id: 'livro',    icon: '📘' },
+  { id: 'coroa',    icon: '👑' }
 ];
 
-// Questões — só repetição simples e aninhada (10+)
+// Questões — apenas repetição simples e aninhada
 let QUESTIONS = [
   {
     tema: "Repetição simples",
@@ -43,7 +43,7 @@ let QUESTIONS = [
   },
   {
     tema: "Repetição simples",
-    enunciado: "Em um algoritmo: \"Repita 3 vezes: pular para frente\", quantas vezes a ação é feita?",
+    enunciado: "Em \"Repita 3 vezes: pular para frente\", quantas vezes a ação é feita?",
     alternativas: [
       "1 vez.",
       "2 vezes.",
@@ -51,7 +51,7 @@ let QUESTIONS = [
       "Nenhuma vez."
     ],
     correta: 2,
-    dica: "Olhe para o número que vem depois de \"Repita\"."
+    dica: "Olhe para o número depois de \"Repita\"."
   },
   {
     tema: "Repetição simples",
@@ -103,7 +103,7 @@ let QUESTIONS = [
   },
   {
     tema: "Repetições aninhadas",
-    enunciado: "Em um desenho com 4 linhas e 2 colunas de estrelas (repetição aninhada), quantas estrelas serão desenhadas?",
+    enunciado: "Em um desenho com 4 linhas e 2 colunas de estrelas, quantas estrelas serão desenhadas?",
     alternativas: [
       "2 estrelas.",
       "4 estrelas.",
@@ -111,7 +111,7 @@ let QUESTIONS = [
       "8 estrelas."
     ],
     correta: 3,
-    dica: "4 linhas × 2 colunas = ?"
+    dica: "4 linhas × 2 colunas."
   },
   {
     tema: "Repetição simples x aninhada",
@@ -135,7 +135,7 @@ let QUESTIONS = [
       "Mostre a mensagem \"Olá\"."
     ],
     correta: 2,
-    dica: "Perceba que existe um \"para cada\" e dentro dele um \"repita\"."
+    dica: "Perceba que existe um \"para cada\" e, dentro dele, um \"repita\"."
   }
 ];
 
@@ -146,7 +146,7 @@ let hits = 0;
 let combo = 0;
 let firstAnswers = [];
 let playerName = "";
-let playerAvatar = AVATARS[0]; // padrão
+let playerAvatar = AVATARS[0];
 let shuffledQuestions = [];
 
 // ===== DOM =====
@@ -167,15 +167,18 @@ const comboEl = document.getElementById('combo');
 const playerNameInput = document.getElementById('playerName');
 const playerNameLabel = document.getElementById('playerNameLabel');
 const contrastBtn = document.getElementById('toggle-contrast');
+
 const fbBackdrop = document.getElementById('fb-backdrop');
 const fbModal = document.getElementById('fb-modal');
 const fbContent = document.getElementById('fb-content');
 const fbClose = document.getElementById('fb-close');
+
 const repBackdrop = document.getElementById('rep-backdrop');
 const repModal = document.getElementById('rep-modal');
 const repContent = document.getElementById('rep-content');
 const repClose = document.getElementById('rep-close');
 const repDownload = document.getElementById('rep-download');
+
 const rankBackdrop = document.getElementById('rank-backdrop');
 const rankModal = document.getElementById('rank-modal');
 const rankContent = document.getElementById('rank-content');
@@ -196,7 +199,7 @@ if(localStorage.getItem('quiz_high_contrast')==='1'){
 qtotal.textContent = QUESTIONS.length;
 updateProgress(0);
 comboEl.textContent = 'x0';
-buildAvatarSelector();   // monta seleção de avatares no início
+buildAvatarSelector();
 
 startBtn.addEventListener('click', startGame);
 reviewBtn.addEventListener('click', showLastReport);
@@ -220,27 +223,23 @@ document.addEventListener('keydown', (e)=>{
   }
 });
 
-// ===== SELEÇÃO DE AVATAR =====
+// ===== AVATARES =====
 function buildAvatarSelector(){
   const container = document.createElement('div');
-  container.style.marginTop = '10px';
-  container.style.display = 'flex';
-  container.style.flexWrap = 'wrap';
-  container.style.gap = '6px';
+  container.className = 'avatar-grid';
   container.setAttribute('aria-label','Escolha de avatar');
 
   AVATARS.forEach((av, index)=>{
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.textContent = av.icon;
-    btn.className = 'pill';
-    btn.style.fontSize = '1.1rem';
+    btn.className = 'avatar-btn';
     btn.dataset.avatarId = av.id;
-    if(index === 0) btn.classList.add('primary');
+    if(index === 0) btn.classList.add('avatar-selected');
     btn.addEventListener('click', ()=>{
       playerAvatar = av;
-      document.querySelectorAll('[data-avatar-id]').forEach(b=>b.classList.remove('primary'));
-      btn.classList.add('primary');
+      document.querySelectorAll('.avatar-btn').forEach(b=>b.classList.remove('avatar-selected'));
+      btn.classList.add('avatar-selected');
       updatePlayerLabel();
     });
     container.appendChild(btn);
@@ -277,11 +276,19 @@ function startGame(){
   comboEl.textContent = 'x0';
   current = -1;
 
-  // embaralhar perguntas e também alternativas de cada uma
-  shuffledQuestions = shuffle(QUESTIONS).map(q => ({
-    ...q,
-    alternativas: shuffle(q.alternativas.slice())
-  }));
+  // Embaralhar perguntas e alternativas preservando qual é correta
+  shuffledQuestions = shuffle(QUESTIONS).map(q => {
+    const opts = q.alternativas.map((texto, idx) => ({
+      texto,
+      isCorrect: idx === q.correta
+    }));
+    return {
+      tema: q.tema,
+      enunciado: q.enunciado,
+      dica: q.dica,
+      alternativas: shuffle(opts)
+    };
+  });
 
   qtotal.textContent = shuffledQuestions.length;
   startBox.style.display = 'none';
@@ -307,29 +314,30 @@ function nextQuestion(){
 
 function renderAnswers(q){
   answersBox.innerHTML = '';
-  q.alternativas.forEach((txt, idx)=>{
+  q.alternativas.forEach((alt, idx)=>{
     const b = document.createElement('button');
     b.className = 'btn';
     b.type = 'button';
-    b.setAttribute('data-idx', idx);
-    b.textContent = txt;
+    b.textContent = alt.texto;
     b.addEventListener('click', ()=> handleAnswer(q, idx, b));
     answersBox.appendChild(b);
   });
 }
 
 function handleAnswer(q, idx, btnEl){
+  const alt = q.alternativas[idx];
+
   if(!firstAnswers[current]){
     firstAnswers[current] = {
       question: q.enunciado,
       theme: q.tema,
       chosenIndex: idx,
-      chosenText: q.alternativas[idx],
-      correctIndex: q.correta,
-      correct: idx === q.correta
+      chosenText: alt.texto,
+      correct: !!alt.isCorrect
     };
   }
-  const isCorrect = (idx === q.correta);
+
+  const isCorrect = !!alt.isCorrect;
   Array.from(answersBox.children).forEach(el=> el.disabled = true);
 
   if(isCorrect){
@@ -390,8 +398,10 @@ function endGame(){
   };
 
   localStorage.setItem('quiz_report_last', JSON.stringify(report));
-  renderReport(report);
+  renderReport(rep
+  ort);
   openModal(repBackdrop, repModal);
+
   sendScoreToServer(`${playerAvatar.icon} ${playerName}`, score);
 
   startBox.style.display = '';
