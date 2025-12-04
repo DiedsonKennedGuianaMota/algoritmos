@@ -388,7 +388,7 @@ async function sendScoreToServer(name, score){
 
 async function loadRanking(){
   try{
-    const resp = await fetch(`${SERVER_URL}scores`);
+    const resp = await fetch(`${SERVER_URL}/scores`);
     const data = await resp.json();
     const top = data.result || [];
 
