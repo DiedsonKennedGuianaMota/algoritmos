@@ -1,103 +1,141 @@
 // ===== CONFIGURAÇÕES =====
 const SERVER_URL = 'https://algoritmos-hglz.onrender.com';
 
-// Questões — 4º ano
-const QUESTIONS = [
+// ===== AVATARES (10 OPÇÕES SIMPLES COM EMOJI) =====
+const AVATARS = [
+  { id: 'robô', icon: '🤖' },
+  { id: 'gatinho', icon: '🐱' },
+  { id: 'cachorro', icon: '🐶' },
+  { id: 'dinossauro', icon: '🦕' },
+  { id: 'estrela', icon: '⭐' },
+  { id: 'foguete', icon: '🚀' },
+  { id: 'controle', icon: '🎮' },
+  { id: 'lápis', icon: '✏️' },
+  { id: 'livro', icon: '📘' },
+  { id: 'coroa', icon: '👑' }
+];
+
+// Questões — só repetição simples e aninhada (10+)
+let QUESTIONS = [
   {
-    tema: "Introdução a algoritmos",
-    enunciado: "O que é um algoritmo?",
+    tema: "Repetição simples",
+    enunciado: "O que é uma repetição simples em um algoritmo?",
     alternativas: [
-      "Um conjunto de passos para resolver um problema.",
-      "Um jogo de computador.",
-      "Uma peça do computador.",
-      "Uma cor de tela."
+      "Repetir um conjunto de passos várias vezes.",
+      "Fazer um passo apenas uma vez.",
+      "Trocar a ordem dos passos.",
+      "Parar o algoritmo antes de começar."
     ],
     correta: 0,
-    dica: "Pense em uma receita de bolo: são passos na ordem certa."
-  },
-  {
-    tema: "Introdução a algoritmos",
-    enunciado: "Qual exemplo mostra um algoritmo no dia a dia?",
-    alternativas: [
-      "Desenhar sem pensar.",
-      "Escovar os dentes seguindo etapas.",
-      "Chutar uma bola aleatoriamente.",
-      "Dormir sem horário."
-    ],
-    correta: 1,
-    dica: "Tem começo, meio e fim em ordem."
+    dica: "Pense em \"faça isso 5 vezes seguidas\"."
   },
   {
     tema: "Repetição simples",
-    enunciado: "Repetição simples significa...",
+    enunciado: "Qual comando em linguagem natural mostra repetição simples?",
     alternativas: [
-      "Fazer um passo uma única vez.",
-      "Fazer um conjunto de passos várias vezes.",
-      "Fazer passos fora de ordem.",
-      "Parar antes de começar."
+      "Repita 4 vezes: bater palmas.",
+      "Se estiver chovendo, abra o guarda-chuva.",
+      "Mostre a mensagem uma vez.",
+      "Pare o programa agora."
     ],
-    correta: 1,
-    dica: "Como bater palmas 5 vezes seguidas."
+    correta: 0,
+    dica: "Procure a palavra \"Repita\" com um número."
   },
   {
     tema: "Repetição simples",
-    enunciado: "Qual comando representa repetir 3 vezes?",
+    enunciado: "Em um algoritmo: \"Repita 3 vezes: pular para frente\", quantas vezes a ação é feita?",
     alternativas: [
-      "Repita 3 vezes: pular.",
-      "Se chover, pular.",
-      "Mostrar: pular uma vez.",
-      "Parar pular."
+      "1 vez.",
+      "2 vezes.",
+      "3 vezes.",
+      "Nenhuma vez."
     ],
-    correta: 0,
-    dica: "Procure a palavra 'Repita' com um número."
+    correta: 2,
+    dica: "Olhe para o número que vem depois de \"Repita\"."
+  },
+  {
+    tema: "Repetição simples",
+    enunciado: "Qual situação NÃO é um exemplo de repetição simples?",
+    alternativas: [
+      "Pular 10 vezes seguidas.",
+      "Bater palmas 5 vezes.",
+      "Beber um gole de água uma vez.",
+      "Pintar 8 quadradinhos, um após o outro."
+    ],
+    correta: 2,
+    dica: "Repetição precisa que algo aconteça várias vezes."
   },
   {
     tema: "Repetições aninhadas",
     enunciado: "O que é uma repetição aninhada?",
     alternativas: [
       "Uma repetição dentro de outra repetição.",
-      "Uma repetição muito grande.",
-      "Uma repetição que nunca acaba.",
+      "Uma repetição muito rápida.",
+      "Uma repetição que nunca para.",
       "Uma repetição sem passos."
     ],
     correta: 0,
-    dica: "Como um relógio: minutos dentro das horas."
+    dica: "É como um relógio: para cada hora, vários minutos."
   },
   {
     tema: "Repetições aninhadas",
-    enunciado: "Qual situação tem repetições aninhadas?",
+    enunciado: "Qual exemplo mostra repetições aninhadas em linguagem natural?",
     alternativas: [
-      "Cantar 1 música 3 vezes.",
-      "Para cada linha, bater palmas 2 vezes.",
-      "Beber água uma vez.",
-      "Pular sem contar."
+      "Repita 5 vezes: chutar a bola.",
+      "Para cada linha do caderno, escreva seu nome 2 vezes.",
+      "Escreva seu nome uma vez.",
+      "Apague tudo e comece de novo."
     ],
     correta: 1,
-    dica: "Há uma repetição externa (linhas) e uma interna (palmas)."
+    dica: "Tem uma repetição maior (linhas) e, dentro dela, outra (vezes)."
   },
   {
-    tema: "Fluxo e ordem",
-    enunciado: "Por que a ordem dos passos é importante?",
+    tema: "Repetições aninhadas",
+    enunciado: "Se o algoritmo diz: \"Para cada quadrado da fileira, pinte 3 bolinhas\", o que acontece?",
     alternativas: [
-      "Porque deixa o desenho mais bonito.",
-      "Para que o resultado saia certo.",
-      "Para terminar mais rápido sempre.",
-      "Para ter mais cores."
+      "Pinta 3 bolinhas no total.",
+      "Pinta 3 bolinhas em cada quadrado da fileira.",
+      "Pinta só o primeiro quadrado.",
+      "Não pinta nada."
     ],
     correta: 1,
-    dica: "Trocar a ordem pode estragar a receita."
+    dica: "A repetição de bolinhas está dentro da repetição de quadrados."
   },
   {
-    tema: "Depuração (debug)",
-    enunciado: "Se algo deu errado no algoritmo, o que fazer primeiro?",
+    tema: "Repetições aninhadas",
+    enunciado: "Em um desenho com 4 linhas e 2 colunas de estrelas (repetição aninhada), quantas estrelas serão desenhadas?",
     alternativas: [
-      "Parar e nunca mais tentar.",
-      "Checar os passos e corrigir onde errou.",
-      "Apagar tudo sem olhar.",
-      "Pedir para o amigo fazer."
+      "2 estrelas.",
+      "4 estrelas.",
+      "6 estrelas.",
+      "8 estrelas."
     ],
-    correta: 1,
-    dica: "Releia com calma e teste passo a passo."
+    correta: 3,
+    dica: "4 linhas × 2 colunas = ?"
+  },
+  {
+    tema: "Repetição simples x aninhada",
+    enunciado: "Qual frase descreve melhor a diferença entre repetição simples e aninhada?",
+    alternativas: [
+      "Na simples repetimos uma ação; na aninhada repetimos grupos de ações dentro de outros.",
+      "Na simples usamos números; na aninhada não usamos números.",
+      "Na simples não repetimos nada; na aninhada repetimos tudo.",
+      "São exatamente a mesma coisa."
+    ],
+    correta: 0,
+    dica: "Na aninhada existe uma repetição maior que contém outra dentro."
+  },
+  {
+    tema: "Repetição simples x aninhada",
+    enunciado: "Qual opção é um algoritmo com repetição aninhada usando linguagem natural?",
+    alternativas: [
+      "Repita 10 vezes: bater na porta.",
+      "Enquanto tiver folhas, leia o livro.",
+      "Para cada aluno da fila, repita 2 vezes: dar um passo à frente.",
+      "Mostre a mensagem \"Olá\"."
+    ],
+    correta: 2,
+    dica: "Perceba que existe um \"para cada\" e dentro dele um \"repita\"."
   }
 ];
 
@@ -108,6 +146,8 @@ let hits = 0;
 let combo = 0;
 let firstAnswers = [];
 let playerName = "";
+let playerAvatar = AVATARS[0]; // padrão
+let shuffledQuestions = [];
 
 // ===== DOM =====
 const qtotal = document.getElementById('qtotal');
@@ -127,19 +167,15 @@ const comboEl = document.getElementById('combo');
 const playerNameInput = document.getElementById('playerName');
 const playerNameLabel = document.getElementById('playerNameLabel');
 const contrastBtn = document.getElementById('toggle-contrast');
-
-// Modais
 const fbBackdrop = document.getElementById('fb-backdrop');
 const fbModal = document.getElementById('fb-modal');
 const fbContent = document.getElementById('fb-content');
 const fbClose = document.getElementById('fb-close');
-
 const repBackdrop = document.getElementById('rep-backdrop');
 const repModal = document.getElementById('rep-modal');
 const repContent = document.getElementById('rep-content');
 const repClose = document.getElementById('rep-close');
 const repDownload = document.getElementById('rep-download');
-
 const rankBackdrop = document.getElementById('rank-backdrop');
 const rankModal = document.getElementById('rank-modal');
 const rankContent = document.getElementById('rank-content');
@@ -160,6 +196,7 @@ if(localStorage.getItem('quiz_high_contrast')==='1'){
 qtotal.textContent = QUESTIONS.length;
 updateProgress(0);
 comboEl.textContent = 'x0';
+buildAvatarSelector();   // monta seleção de avatares no início
 
 startBtn.addEventListener('click', startGame);
 reviewBtn.addEventListener('click', showLastReport);
@@ -172,10 +209,8 @@ skipBtn.addEventListener('click', ()=>{
 
 fbClose.addEventListener('click', ()=> closeModal(fbBackdrop, fbModal));
 fbBackdrop.addEventListener('click', (e)=> { if(e.target===fbBackdrop) closeModal(fbBackdrop, fbModal); });
-
 repClose.addEventListener('click', ()=> closeModal(repBackdrop, repModal));
 repBackdrop.addEventListener('click', (e)=> { if(e.target===repBackdrop) closeModal(repBackdrop, repModal); });
-
 rankClose.addEventListener('click', ()=> closeModal(rankBackdrop, rankModal));
 rankBackdrop.addEventListener('click', (e)=> { if(e.target===rankBackdrop) closeModal(rankBackdrop, rankModal); });
 
@@ -184,6 +219,43 @@ document.addEventListener('keydown', (e)=>{
     nextQuestion();
   }
 });
+
+// ===== SELEÇÃO DE AVATAR =====
+function buildAvatarSelector(){
+  const container = document.createElement('div');
+  container.style.marginTop = '10px';
+  container.style.display = 'flex';
+  container.style.flexWrap = 'wrap';
+  container.style.gap = '6px';
+  container.setAttribute('aria-label','Escolha de avatar');
+
+  AVATARS.forEach((av, index)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = av.icon;
+    btn.className = 'pill';
+    btn.style.fontSize = '1.1rem';
+    btn.dataset.avatarId = av.id;
+    if(index === 0) btn.classList.add('primary');
+    btn.addEventListener('click', ()=>{
+      playerAvatar = av;
+      document.querySelectorAll('[data-avatar-id]').forEach(b=>b.classList.remove('primary'));
+      btn.classList.add('primary');
+      updatePlayerLabel();
+    });
+    container.appendChild(btn);
+  });
+
+  startBox.appendChild(container);
+}
+
+function updatePlayerLabel(){
+  if(playerName){
+    playerNameLabel.textContent = `${playerAvatar.icon} ${playerName}`;
+  }else{
+    playerNameLabel.textContent = `${playerAvatar.icon} —`;
+  }
+}
 
 // ===== FUNÇÕES DO JOGO =====
 function startGame(){
@@ -194,7 +266,7 @@ function startGame(){
     return;
   }
   playerName = name;
-  playerNameLabel.textContent = playerName;
+  updatePlayerLabel();
 
   score = 0;
   hits = 0;
@@ -205,20 +277,27 @@ function startGame(){
   comboEl.textContent = 'x0';
   current = -1;
 
+  // embaralhar perguntas e também alternativas de cada uma
+  shuffledQuestions = shuffle(QUESTIONS).map(q => ({
+    ...q,
+    alternativas: shuffle(q.alternativas.slice())
+  }));
+
+  qtotal.textContent = shuffledQuestions.length;
   startBox.style.display = 'none';
   nextQuestion();
 }
 
 function nextQuestion(){
   current++;
-  if(current >= QUESTIONS.length){
+  if(current >= shuffledQuestions.length){
     endGame();
     return;
   }
   qnum.textContent = String(current+1);
-  updateProgress(current / QUESTIONS.length);
+  updateProgress(current / shuffledQuestions.length);
 
-  const q = QUESTIONS[current];
+  const q = shuffledQuestions[current];
   qtitle.textContent = `(${q.tema}) ${q.enunciado}`;
   renderAnswers(q);
 
@@ -299,9 +378,9 @@ function revealFeedback(correct, text){
 
 function endGame(){
   updateProgress(1);
-  const total = QUESTIONS.length;
+  const total = shuffledQuestions.length;
   const report = {
-    player: playerName,
+    player: `${playerAvatar.icon} ${playerName}`,
     when: new Date().toISOString(),
     totalQuestions: total,
     score,
@@ -313,11 +392,8 @@ function endGame(){
   localStorage.setItem('quiz_report_last', JSON.stringify(report));
   renderReport(report);
   openModal(repBackdrop, repModal);
+  sendScoreToServer(`${playerAvatar.icon} ${playerName}`, score);
 
-  // Enviar score para o servidor de ranking
-  sendScoreToServer(playerName, score);
-
-  // Reset visual para jogar de novo
   startBox.style.display = '';
   qtitle.textContent = 'Parabéns! Você terminou. Veja seu relatório ou jogue novamente.';
   answersBox.innerHTML = '';
@@ -418,4 +494,14 @@ async function loadRanking(){
     rankContent.innerHTML = '<p>Não foi possível carregar o ranking agora.</p>';
     openModal(rankBackdrop, rankModal);
   }
+}
+
+// ===== UTIL: EMBARALHAR =====
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length -1; i>0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
