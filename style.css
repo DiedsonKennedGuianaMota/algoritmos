@@ -317,8 +317,58 @@ body:focus-within .btn:focus{outline:3px solid var(--accent)}
 @media (max-width:700px){
   .hero{grid-template-columns:1fr}
 }
+.start{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  border:1px dashed #2b3658;
+  border-radius:14px;
+  color:#cfe1ff;
+}
+
+.start-inner{
+  width:100%;
+  max-width:320px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.start-title{
+  margin:0 0 4px;
+  font-size:0.95rem;
+  color:var(--muted);
+}
+
+.start-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.start-buttons{
+  justify-content:flex-start;
+}
+
+.name-input{
+  flex:1;
+  min-width:0;
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid #334;
+  background:#0b1020;
+  color:var(--text);
+}
+
+.name-input:focus{
+  outline:2px solid var(--accent);
+  border-color:var(--accent);
+}
+
+/* grade de avatares */
 .avatar-grid{
-  margin-top:10px;
+  margin-top:6px;
   display:grid;
   grid-template-columns:repeat(5,40px);
   gap:8px;
@@ -349,4 +399,3 @@ body:focus-within .btn:focus{outline:3px solid var(--accent)}
   color:#052030;
   border-color:#46ffa6;
 }
-
