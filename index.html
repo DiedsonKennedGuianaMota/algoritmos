@@ -45,19 +45,28 @@
         </div>
 
         <div class="start" id="startBox">
-          <div>
-            <p style="margin:0 0 8px">Digite seu nome e clique em Iniciar.</p>
-            <input id="playerName" class="name-input" type="text" maxlength="20"
-                   placeholder="Seu nome ou apelido" />
-            <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
-              <button id="startBtn" class="pill primary">Iniciar</button>
-              <button id="reviewBtn" class="pill ghost"
-                      aria-label="Abrir relatório da última sessão">Último relatório</button>
-              <button id="rankBtn" class="pill ghost"
-                      aria-label="Abrir ranking geral">Ver ranking</button>
-            </div>
-          </div>
-        </div>
+  <div class="start-inner">
+    <p class="start-title">Digite seu nome e escolha um avatar para começar.</p>
+
+    <div class="start-row">
+      <input id="playerName" class="name-input" type="text" maxlength="20"
+             placeholder="Seu nome ou apelido" />
+    </div>
+
+    <div class="start-row start-buttons">
+      <button id="startBtn" class="pill primary">Iniciar</button>
+      <button id="reviewBtn" class="pill ghost" aria-label="Abrir relatório da última sessão">
+        Último relatório
+      </button>
+      <button id="rankBtn" class="pill ghost" aria-label="Abrir ranking geral">
+        Ver ranking
+      </button>
+    </div>
+
+    <!-- os avatares serão inseridos via JS logo abaixo desta linha -->
+  </div>
+</div>
+
       </div>
 
       <div class="main">
