@@ -15,8 +15,8 @@ const AVATARS = [
   { id: 'coroa',    icon: '👑' }
 ];
 
-// Questões — apenas repetição simples e aninhada
-let QUESTIONS = [
+// Questões — repetição simples e aninhada
+const QUESTIONS = [
   {
     tema: "Repetição simples",
     enunciado: "O que é uma repetição simples em um algoritmo?",
@@ -276,21 +276,10 @@ function startGame(){
   comboEl.textContent = 'x0';
   current = -1;
 
-  // Embaralhar perguntas e alternativas preservando qual é correta
-  shuffledQuestions = shuffle(QUESTIONS).map(q => {
-    const opts = q.alternativas.map((texto, idx) => ({
-      texto,
-      isCorrect: idx === q.correta
-    }));
-    return {
-      tema: q.tema,
-      enunciado: q.enunciado,
-      dica: q.dica,
-      alternativas: shuffle(opts)
-    };
-  });
-
+  // Embaralha só a ordem das questões
+  shuffledQuestions = shuffle(QUESTIONS);
   qtotal.textContent = shuffledQuestions.length;
+
   startBox.style.display = 'none';
   nextQuestion();
 }
@@ -301,10 +290,10 @@ function nextQuestion(){
     endGame();
     return;
   }
+  const q = shuffledQuestions[current];
+
   qnum.textContent = String(current+1);
   updateProgress(current / shuffledQuestions.length);
-
-  const q = shuffledQuestions[current];
   qtitle.textContent = `(${q.tema}) ${q.enunciado}`;
   renderAnswers(q);
 
@@ -314,30 +303,30 @@ function nextQuestion(){
 
 function renderAnswers(q){
   answersBox.innerHTML = '';
-  q.alternativas.forEach((alt, idx)=>{
+  q.alternativas.forEach((txt, idx)=>{
     const b = document.createElement('button');
     b.className = 'btn';
     b.type = 'button';
-    b.textContent = alt.texto;
+    b.dataset.idx = idx;
+    b.textContent = txt;
     b.addEventListener('click', ()=> handleAnswer(q, idx, b));
     answersBox.appendChild(b);
   });
 }
 
 function handleAnswer(q, idx, btnEl){
-  const alt = q.alternativas[idx];
-
   if(!firstAnswers[current]){
     firstAnswers[current] = {
       question: q.enunciado,
       theme: q.tema,
       chosenIndex: idx,
-      chosenText: alt.texto,
-      correct: !!alt.isCorrect
+      chosenText: q.alternativas[idx],
+      correctIndex: q.correta,
+      correct: idx === q.correta
     };
   }
 
-  const isCorrect = !!alt.isCorrect;
+  const isCorrect = (idx === q.correta);
   Array.from(answersBox.children).forEach(el=> el.disabled = true);
 
   if(isCorrect){
@@ -398,8 +387,7 @@ function endGame(){
   };
 
   localStorage.setItem('quiz_report_last', JSON.stringify(report));
-  renderReport(rep
-  ort);
+  renderReport(report);
   openModal(repBackdrop, repModal);
 
   sendScoreToServer(`${playerAvatar.icon} ${playerName}`, score);
