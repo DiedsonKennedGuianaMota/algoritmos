@@ -1,5 +1,5 @@
 // ===== CONFIGURAÇÕES =====
-const SERVER_URL = 'https://diedsonkennedguianamota.github.io/algoritmos'; // ajuste se hospedar em outro domínio
+const SERVER_URL = 'https://algoritmos-hglz.onrender.com';
 
 // Questões — 4º ano
 const QUESTIONS = [
