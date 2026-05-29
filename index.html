@@ -3,790 +3,369 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Missão Ciberespaço: Lógica e Arduino</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Mastering Cyberspace: Lógica & Arduino</title>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-dark: #050505;
-            --cyber-blue: #00f2ff;
-            --cyber-pink: #ff00ea;
-            --cyber-green: #00ff41;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --transition: all 0.4s ease;
+            --neon-blue: #00d4ff;
+            --neon-pink: #ff0055;
+            --neon-purple: #9d00ff;
+            --neon-green: #39ff14;
+            --dark-bg: #020205;
+            --glass: rgba(0, 20, 40, 0.85);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--bg-dark);
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--dark-bg);
             color: #fff;
-            overflow: hidden; /* Mantém o foco no slide */
-        }
-
-        h1, h2, h3 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; }
-
-        /* --- BACKGROUND ANIMATION --- */
-        .stars {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-            z-index: -1;
-        }
-
-        .grid-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
-            perspective: 500px;
-            z-index: -1;
-        }
-
-        /* --- SLIDE STRUCTURE --- */
-        .slide-container {
-            width: 100vw;
+            overflow: hidden;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            display: none; /* Esconde todos os slides por padrão */
         }
 
-        .slide-container.active {
-            display: flex;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .content-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 242, 255, 0.3);
-            border-radius: 20px;
-            padding: 50px;
-            max-width: 1000px;
-            width: 100%;
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
-            position: relative;
-        }
-
-        /* --- ELEMENTS --- */
-        .title-glow {
-            color: var(--cyber-blue);
-            text-shadow: 0 0 10px var(--cyber-blue);
-            margin-bottom: 20px;
-            font-size: 2.5rem;
-        }
-
-        .step-list { list-style: none; margin: 20px 0; }
-        .step-list li {
-            background: rgba(255, 255, 255, 0.03);
-            margin: 10px 0;
-            padding: 15px;
-            border-left: 4px solid var(--cyber-pink);
-            font-size: 1.1rem;
-        }
-
-        .code-block {
-            background: #000;
-            color: var(--cyber-green);
-            padding: 20px;
-            border-radius: 10px;
-            font-family: monospace;
-            border: 1px solid var(--cyber-green);
-            margin: 20px 0;
-        }
-
-        /* --- NAVIGATION --- */
-        .nav-buttons {
+        /* --- BACKGROUND CYBERSPACE --- */
+        .cyber-bg {
             position: fixed;
-            bottom: 30px;
-            right: 50px;
-            display: flex;
-            gap: 20px;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, #000 0%, #050a1f 100%);
+            z-index: -2;
         }
 
-        .btn {
-            background: transparent;
-            border: 2px solid var(--cyber-blue);
-            color: var(--cyber-blue);
-            padding: 12px 25px;
-            cursor: pointer;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
-            transition: var(--transition);
-            text-transform: uppercase;
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            z-index: 100;
+            pointer-events: none;
         }
 
-        .btn:hover {
-            background: var(--cyber-blue);
-            color: #000;
-            box-shadow: 0 0 20px var(--cyber-blue);
+        /* --- ESTRUTURA SLIDES --- */
+        .slide {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%; max-width: 1100px;
+            height: 80vh;
+            background: var(--glass);
+            border: 2px solid var(--neon-blue);
+            border-radius: 15px;
+            padding: 40px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2), inset 0 0 15px rgba(0, 212, 255, 0.1);
+            animation: slideIn 0.5s ease;
         }
 
-        /* --- PROFILE SETUP --- */
-        .profile-selection {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-top: 20px;
+        .slide.active { display: flex; }
+
+        h1, h2 { font-family: 'Audiowide', cursive; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); margin-bottom: 20px; }
+        p { font-size: 1.2rem; line-height: 1.6; margin-bottom: 15px; font-weight: 300; }
+        b { color: var(--neon-pink); }
+
+        /* --- CONTEÚDO ESPECÍFICO --- */
+        .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
+        .info-box { background: rgba(255,255,255,0.05); padding: 20px; border-left: 4px solid var(--neon-purple); }
+        .code { font-family: 'Share Tech Mono', monospace; color: var(--neon-green); background: #000; padding: 15px; border-radius: 5px; font-size: 0.9rem; border: 1px solid #333; }
+
+        /* --- PERFIL E AVATAR --- */
+        .profile-container { text-align: center; }
+        .avatar-gallery { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin: 20px 0; }
+        .avatar-item { 
+            width: 80px; height: 80px; border: 3px solid #333; border-radius: 50%; 
+            cursor: pointer; transition: 0.3s; overflow: hidden;
         }
-
-        .avatar-option {
-            border: 2px solid transparent;
-            border-radius: 10px;
-            cursor: pointer;
-            padding: 10px;
-            text-align: center;
-            transition: var(--transition);
-        }
-
-        .avatar-option img { width: 80px; height: 80px; border-radius: 50%; }
-
-        .avatar-option.selected {
-            border-color: var(--cyber-pink);
-            background: rgba(255, 0, 234, 0.1);
-        }
-
-        .input-name {
-            width: 100%;
-            padding: 15px;
-            background: transparent;
-            border: 1px solid var(--cyber-blue);
-            color: #fff;
-            margin-bottom: 20px;
-            border-radius: 5px;
+        .avatar-item img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-item.selected { border-color: var(--neon-green); box-shadow: 0 0 15px var(--neon-green); transform: scale(1.1); }
+        
+        .input-cyber {
+            background: transparent; border: 2px solid var(--neon-purple); color: white;
+            padding: 12px 20px; font-size: 1.2rem; border-radius: 30px; outline: none; width: 300px; text-align: center;
         }
 
         /* --- QUIZ --- */
-        .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .quiz-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--cyber-blue);
-            color: white;
-            padding: 15px;
-            text-align: left;
-            cursor: pointer;
-            border-radius: 8px;
+        .quiz-option {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--neon-blue); color: white;
+            padding: 15px; margin: 8px 0; border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: left; font-size: 1.1rem;
         }
-        .quiz-btn:hover { background: rgba(0, 242, 255, 0.1); }
+        .quiz-option:hover { background: rgba(0, 212, 255, 0.2); }
 
-        .locked-screen { text-align: center; color: var(--cyber-pink); }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* --- BOTÕES --- */
+        .nav-controls { position: fixed; bottom: 30px; width: 100%; display: flex; justify-content: center; gap: 40px; }
+        .btn-cyber {
+            background: transparent; border: 2px solid var(--neon-pink); color: var(--neon-pink);
+            padding: 10px 30px; font-family: 'Audiowide'; cursor: pointer; transition: 0.3s; text-transform: uppercase;
         }
+        .btn-cyber:hover { background: var(--neon-pink); color: white; box-shadow: 0 0 20px var(--neon-pink); }
+        .btn-cyber:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translate(-50%, -45%); } to { opacity: 1; transform: translate(-50%, -50%); } }
     </style>
 </head>
 <body>
 
-<div class="stars"></div>
-<div class="grid-bg"></div>
+    <div class="cyber-bg"></div>
+    <div class="scanlines"></div>
 
-<div class="slide-container active" id="slide-1">
-    <div class="content-card" style="text-align: center;">
-        <h1 class="title-glow" style="font-size: 4rem;">MISSÃO:<br>CIBERESPAÇO</h1>
-        <p>Bem-vindo, Recruta. Hoje vamos hackear os fundamentos da Lógica e do Arduino.</p>
-        <div style="margin-top: 40px; font-size: 5rem; color: var(--cyber-blue);">
-            <i class="fa-solid fa-user-shield"></i>
+    <div class="slide active" id="s1">
+        <h1 style="font-size: 4rem;">MISSÃO:<br>CYBERLOGIC</h1>
+        <p>A conexão com o mainframe foi estabelecida. Prepare-se para aprender a linguagem das máquinas.</p>
+        <div class="info-box">
+            <p><i class="fa-solid fa-terminal"></i> <b>Status:</b> Operacional</p>
+            <p><i class="fa-solid fa-microchip"></i> <b>Objetivo:</b> Algoritmos, Lógica e Arduino</p>
         </div>
     </div>
-</div>
 
-<div class="slide-container" id="slide-2">
-    <div class="content-card">
-        <h2 class="title-glow">01. Algoritmos</h2>
-        <p>Um algoritmo é como uma <strong>receita de bolo</strong>. São passos exatos que o computador deve seguir.</p>
-        <ul class="step-list">
-            <li><i class="fa-solid fa-forward"></i> Entrada: Os ingredientes.</li>
-            <li><i class="fa-solid fa-forward"></i> Processamento: O ato de bater e assar.</li>
-            <li><i class="fa-solid fa-forward"></i> Saída: O bolo pronto!</li>
-        </ul>
-        <p>No ciberespaço, tudo funciona com algoritmos: do seu jogo favorito ao GPS.</p>
-    </div>
-</div>
-
-<div class="slide-container" id="slide-3">
-    <div class="content-card">
-        <h2 class="title-glow">02. O Cérebro: Arduino</h2>
-        <p>O Arduino é uma placa que permite controlar coisas físicas (luzes, motores) usando código.</p>
-        <div style="display: flex; gap: 20px; align-items: center; margin-top: 20px;">
-            <div style="flex: 1;">
-                <p><strong>Pinos:</strong> São os braços do Arduino.</p>
-                <p><strong>Microcontrolador:</strong> É o processador central.</p>
+    <div class="slide" id="s2">
+        <h2>O que é um Algoritmo?</h2>
+        <p>Imagine que você precisa ensinar um robô a escovar os dentes. Ele não sabe o que é "limpar". Você precisa dar <b>passos finitos e lógicos</b>.</p>
+        <div class="grid-info">
+            <div class="info-box">
+                <h3>1. Sequência</h3>
+                <p>As ordens devem ter uma ordem correta. Não se coloca o sapato antes da meia!</p>
             </div>
-            <div style="flex: 1; text-align: center;">
-                <i class="fa-solid fa-microchip" style="font-size: 6rem; color: var(--cyber-pink);"></i>
+            <div class="info-box">
+                <h3>2. Clareza</h3>
+                <p>Computadores não entendem "talvez". As instruções devem ser precisas.</p>
             </div>
         </div>
+        <p style="margin-top:20px">No Ciberespaço, algoritmos decidem o que você vê no YouTube ou como um GPS calcula sua rota.</p>
     </div>
-</div>
 
-<div class="slide-container" id="slide-4">
-    <div class="content-card">
-        <h2 class="title-glow">03. Sintaxe Básica</h2>
-        <p>Veja como falamos com o Arduino:</p>
-        <div class="code-block">
-            void loop() { <br>
-            &nbsp;&nbsp;digitalWrite(13, HIGH); // Liga o LED <br>
-            &nbsp;&nbsp;delay(1000); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Espera 1s <br>
-            &nbsp;&nbsp;digitalWrite(13, LOW); &nbsp;// Desliga o LED <br>
+    <div class="slide" id="s3">
+        <h2>Lógica: O Pensamento Binário</h2>
+        <p>A programação usa condições para tomar decisões. A estrutura mais famosa é o <b>SE (IF)</b>.</p>
+        <div class="code">
+            SE (está chovendo) { <br>
+            &nbsp;&nbsp;levar_guarda_chuva = VERDADEIRO; <br>
+            } SENÃO { <br>
+            &nbsp;&nbsp;levar_guarda_chuva = FALSO; <br>
             }
         </div>
+        <p>Também usamos <b>Loops (Laços)</b>: "Enquanto o despertador tocar, continue dormindo".</p>
     </div>
-</div>
 
-<div class="slide-container" id="slide-5">
-    <div class="content-card">
-        <h2 class="title-glow">Identifique-se, Recruta</h2>
-        <input type="text" id="userName" class="input-name" placeholder="Digite seu Nome de Usuário">
-        <p>Escolha seu Avatar:</p>
-        <div class="profile-selection" id="avatarGrid">
-            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=1')">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=1" alt="Bot 1">
+    <div class="slide" id="s4">
+        <h2>Conhecendo o Arduino</h2>
+        <div class="grid-info">
+            <div>
+                <p>O Arduino é uma placa de <b>prototipagem</b>. É o cérebro físico que recebe seu código e controla o mundo real.</p>
+                <ul style="margin-left: 20px;">
+                    <li><b>Entradas:</b> Sensores (luz, som, temperatura).</li>
+                    <li><b>Saídas:</b> Atuadores (LEDs, motores, telas).</li>
+                </ul>
             </div>
-            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=2')">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=2" alt="Bot 2">
-            </div>
-            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=3')">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=3" alt="Bot 3">
-            </div>
-            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=4')">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=4" alt="Bot 4">
+            <div style="text-align: center;">
+                <i class="fa-solid fa-microchip" style="font-size: 8rem; color: var(--neon-blue);"></i>
             </div>
         </div>
     </div>
-</div>
 
-<div class="slide-container" id="slide-6">
-    <div class="content-card" id="quizContent">
-        <h2 class="title-glow">Avaliação de Sistema</h2>
-        <div id="quizArea">
-            <p id="questionText">Aguardando início...</p>
-            <div class="quiz-options" id="optionsArea"></div>
-        </div>
-        <div id="lockArea" class="locked-screen" style="display: none;">
-            <i class="fa-solid fa-user-lock" style="font-size: 4rem; margin-bottom: 20px;"></i>
-            <h3>ACESSO BLOQUEADO</h3>
-            <p>Você já realizou este teste. O sistema não permite múltiplas tentativas.</p>
-            <button class="btn" style="margin-top:20px" onclick="downloadReport()">Baixar Meu Relatório</button>
+    <div class="slide" id="s5">
+        <h2>Digital vs Analógico</h2>
+        <p>Esta é a base para conectar coisas ao seu Arduino:</p>
+        <div class="grid-info">
+            <div class="info-box">
+                <h3>Digital (0 ou 1)</h3>
+                <p>Apenas dois estados. Ligado ou Desligado. Aberto ou Fechado. Ex: Interruptor de luz.</p>
+            </div>
+            <div class="info-box">
+                <h3>Analógico (0 a 1023)</h3>
+                <p>Vários valores intermediários. Ex: O volume de um rádio ou o brilho do sol.</p>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="slide-container" id="slide-7">
-    <div class="content-card" style="text-align: center;">
-        <h2 class="title-glow">Missão Cumprida</h2>
-        <p id="finalMessage"></p>
-        <i class="fa-solid fa-flag-checkered" style="font-size: 5rem; color: var(--cyber-green); margin-top: 30px;"></i>
+    <div class="slide" id="s6">
+        <h2>Peças do Hardware</h2>
+        <div class="grid-info">
+            <div class="info-box">
+                <b>Resistores:</b> Servem para proteger os componentes, limitando a corrente elétrica (para não queimar o LED!).
+            </div>
+            <div class="info-box">
+                <b>Protoboard:</b> Uma placa com furos onde testamos os circuitos sem precisar de solda.
+            </div>
+            <div class="info-box">
+                <b>Jumpers:</b> Os fios coloridos que conectam tudo.
+            </div>
+            <div class="info-box">
+                <b>GND (Ground):</b> O "Terra" ou polo negativo do circuito. Essencial para a energia fluir.
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="nav-buttons">
-    <button class="btn" id="prevBtn" onclick="changeSlide(-1)">Voltar</button>
-    <button class="btn" id="nextBtn" onclick="changeSlide(1)">Próximo</button>
-</div>
+    <div class="slide" id="s7">
+        <h2>Criação de Avatar</h2>
+        <div class="profile-container">
+            <input type="text" id="userName" class="input-cyber" placeholder="Seu Nome de Recruta">
+            <p style="margin-top: 20px;">Selecione sua identidade visual:</p>
+            <div class="avatar-gallery" id="avatarPicker">
+                </div>
+            <p>Ou cole a URL de uma foto:</p>
+            <input type="text" id="userPhotoUrl" class="input-cyber" style="width: 80%; font-size: 0.8rem;" placeholder="https://link-da-sua-foto.jpg">
+        </div>
+    </div>
 
-<script>
-    let currentSlide = 1;
-    const totalSlides = 7;
-    let selectedAvatar = "";
-    let score = 0;
-    
-    const quizData = [
-        { q: "O que é um algoritmo?", a: ["Um robô físico", "Uma sequência lógica de passos", "Uma marca de computador"], correct: 1 },
-        { q: "Qual comando liga um pino no Arduino?", a: ["digitalWrite(pin, HIGH)", "turnOn(pin)", "pinMode(INPUT)"], correct: 0 },
-        { q: "Onde o código do Arduino roda repetidamente?", a: ["void setup()", "void start()", "void loop()"], correct: 2 }
-    ];
-    let currentQuestion = 0;
+    <div class="slide" id="s8">
+        <h2 id="quizTitle">Teste de Aptidão</h2>
+        <div id="lockScreen" style="display: none; text-align: center; color: var(--neon-pink);">
+            <i class="fa-solid fa-user-lock" style="font-size: 5rem; margin-bottom: 20px;"></i>
+            <h3>SISTEMA TRAVADO</h3>
+            <p>Este usuário já completou o teste. Tentativas múltiplas não são permitidas.</p>
+        </div>
+        <div id="quizContent">
+            <p id="questionCount" style="color: var(--neon-purple); font-weight: bold;"></p>
+            <h3 id="questionText" style="margin-bottom: 20px;">Carregando pergunta...</h3>
+            <div id="optionsBox" class="flex-column"></div>
+        </div>
+    </div>
 
-    function changeSlide(n) {
-        if (currentSlide === 5 && n === 1) {
-            const name = document.getElementById('userName').value;
-            if (!name || !selectedAvatar) {
-                alert("Por favor, preencha seu nome e escolha um avatar!");
+    <div class="slide" id="s9">
+        <h2>Missão Concluída</h2>
+        <div style="display: flex; gap: 30px; align-items: center;">
+            <div id="finalAvatar" style="width: 150px; height: 150px; border-radius: 50%; border: 4px solid var(--neon-green); overflow: hidden;"></div>
+            <div>
+                <h3 id="resultName">Recruta</h3>
+                <p id="resultScore" style="font-size: 2rem; color: var(--neon-green);"></p>
+            </div>
+        </div>
+        <div style="margin-top: 30px;">
+            <button class="btn-cyber" onclick="downloadReport()">Gerar Relatório de Desempenho</button>
+        </div>
+    </div>
+
+    <div class="nav-controls">
+        <button class="btn-cyber" id="btnPrev" onclick="moveSlide(-1)">Anterior</button>
+        <button class="btn-cyber" id="btnNext" onclick="moveSlide(1)">Próximo</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 9;
+        let score = 0;
+        let userAvatar = "https://api.dicebear.com/7.x/bottts/svg?seed=1";
+
+        const questions = [
+            { q: "O que define um algoritmo?", a: ["Um código muito difícil", "Uma sequência finita de passos", "Uma peça de computador", "Um tipo de vírus"], c: 1 },
+            { q: "Qual comando é usado para ligar um LED no pino 13?", a: ["digitalRead(13)", "analogWrite(13, 0)", "digitalWrite(13, HIGH)", "pinMode(13, INPUT)"], c: 2 },
+            { q: "Para que serve o Resistor?", a: ["Dar mais energia", "Proteger componentes limitando a corrente", "Ligar o Arduino", "Armazenar fotos"], c: 1 },
+            { q: "O que significa GND no Arduino?", a: ["Grande Noite", "Polo Positivo", "Polo Negativo / Terra", "Entrada de Dados"], c: 2 },
+            { q: "Qual dessas é uma entrada (sensor)?", a: ["LED", "Buzzer", "Motor Servo", "Sensor de Luz (LDR)"], c: 3 },
+            { q: "A função delay(2000) faz o que?", a: ["Apaga o código", "Espera 2 segundos", "Espera 20 segundos", "Reinicia a placa"], c: 1 },
+            { q: "Onde o código do Arduino roda sem parar?", a: ["void setup()", "void start()", "void loop()", "void end()"], c: 2 },
+            { q: "Um sinal Digital pode ter quantos valores?", a: ["Infinitos", "Apenas 1", "Apenas 2 (0 ou 1)", "Exatamente 1024"], c: 2 },
+            { q: "O que é uma Protoboard?", a: ["Uma placa para testes sem solda", "O cérebro do robô", "Um cabo de conexão", "Uma linguagem de programação"], c: 0 },
+            { q: "A estrutura SE (IF) serve para:", a: ["Repetir um código", "Tomar uma decisão lógica", "Desligar o Arduino", "Criar um algoritmo de bolo"], c: 1 }
+        ];
+
+        let currentQ = 0;
+
+        // Inicializar Avatares
+        const picker = document.getElementById('avatarPicker');
+        for(let i=1; i<=6; i++) {
+            const imgUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${i+10}`;
+            const div = document.createElement('div');
+            div.className = 'avatar-item';
+            div.innerHTML = `<img src="${imgUrl}">`;
+            div.onclick = () => {
+                document.querySelectorAll('.avatar-item').forEach(d => d.classList.remove('selected'));
+                div.classList.add('selected');
+                userAvatar = imgUrl;
+            };
+            picker.appendChild(div);
+        }
+
+        function moveSlide(dir) {
+            if(currentSlide === 7 && dir === 1) {
+                const name = document.getElementById('userName').value;
+                if(!name) { alert("Identifique-se antes de prosseguir!"); return; }
+                if(localStorage.getItem('completed_' + name)) {
+                    showLock();
+                }
+            }
+
+            document.getElementById('s' + currentSlide).classList.remove('active');
+            currentSlide += dir;
+            if(currentSlide < 1) currentSlide = 1;
+            if(currentSlide > totalSlides) currentSlide = totalSlides;
+            document.getElementById('s' + currentSlide).classList.add('active');
+
+            if(currentSlide === 8) renderQuestion();
+            
+            // Controle de botões
+            document.getElementById('btnPrev').disabled = currentSlide === 1;
+            document.getElementById('btnNext').style.visibility = (currentSlide === 8 || currentSlide === totalSlides) ? 'hidden' : 'visible';
+        }
+
+        function showLock() {
+            document.getElementById('quizContent').style.display = 'none';
+            document.getElementById('lockScreen').style.display = 'block';
+        }
+
+        function renderQuestion() {
+            if(currentQ >= questions.length) {
+                finishQuiz();
                 return;
             }
-            checkLock();
-        }
-
-        document.getElementById(`slide-${currentSlide}`).classList.remove('active');
-        currentSlide += n;
-        if (currentSlide < 1) currentSlide = 1;
-        if (currentSlide > totalSlides) currentSlide = totalSlides;
-        document.getElementById(`slide-${currentSlide}`).classList.add('active');
-        
-        if (currentSlide === 6) startQuiz();
-    }
-
-    function selectAvatar(el, url) {
-        document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
-        el.classList.add('selected');
-        selectedAvatar = url;
-    }
-
-    function checkLock() {
-        const name = document.getElementById('userName').value;
-        if (localStorage.getItem('quiz_done_' + name)) {
-            document.getElementById('quizArea').style.display = 'none';
-            document.getElementById('lockArea').style.display = 'block';
-            document.getElementById('nextBtn').style.display = 'none';
-        } else {
-            document.getElementById('quizArea').style.display = 'block';
-            document.getElementById('lockArea').style.display = 'none';
-        }
-    }
-
-    function startQuiz() {
-        if (currentQuestion < quizData.length) {
-            const data = quizData[currentQuestion];
-            document.getElementById('questionText').innerText = data.q;
-            const optionsArea = document.getElementById('optionsArea');
-            optionsArea.innerHTML = "";
-            data.a.forEach((opt, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'quiz-btn';
-                btn.innerText = opt;
-                btn.onclick = () => nextQuestion(index);
-                optionsArea.appendChild(btn);
+            const q = questions[currentQ];
+            document.getElementById('questionCount').innerText = `PERGUNTA ${currentQ + 1} DE ${questions.length}`;
+            document.getElementById('questionText').innerText = q.q;
+            const box = document.getElementById('optionsBox');
+            box.innerHTML = '';
+            
+            q.a.forEach((opt, idx) => {
+                const b = document.createElement('button');
+                b.className = 'quiz-option';
+                b.innerText = opt;
+                b.onclick = () => {
+                    if(idx === q.c) score++;
+                    currentQ++;
+                    renderQuestion();
+                };
+                box.appendChild(b);
             });
-        } else {
-            finishQuiz();
-        }
-    }
-
-    function nextQuestion(choice) {
-        if (choice === quizData[currentQuestion].correct) score++;
-        currentQuestion++;
-        startQuiz();
-    }
-
-    function finishQuiz() {
-        const name = document.getElementById('userName').value;
-        localStorage.setItem('quiz_done_' + name, true);
-        localStorage.setItem('quiz_score_' + name, score);
-        
-        document.getElementById('quizArea').innerHTML = `
-            <h3 style="color: var(--cyber-green)">Teste Concluído!</h3>
-            <p>Sua pontuação foi salva no banco de dados local.</p>
-            <p>Pressione 'Próximo' para finalizar.</p>
-        `;
-        document.getElementById('finalMessage').innerText = `Parabéns, ${name}! Você completou o treinamento com ${score}/${quizData.length} acertos.`;
-    }
-
-    function downloadReport() {
-        const name = document.getElementById('userName').value;
-        const savedScore = localStorage.getItem('quiz_score_' + name);
-        const text = `RELATÓRIO DE MISSÃO - CIBERESPAÇO\nESTUDANTE: ${name}\nACERTOS: ${savedScore} de ${quizData.length}\nDATA: ${new Date().toLocaleDateString()}`;
-        const blob = new Blob([text], { type: 'text/plain' });
-        const anchor = document.createElement('a');
-        anchor.download = `relatorio_${name}.txt`;
-        anchor.href = window.URL.createObjectURL(blob);
-        anchor.click();
-    }
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Missão Ciberespaço: Lógica e Arduino</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --bg-dark: #050505;
-            --cyber-blue: #00f2ff;
-            --cyber-pink: #ff00ea;
-            --cyber-green: #00ff41;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --transition: all 0.4s ease;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--bg-dark);
-            color: #fff;
-            overflow: hidden; /* Mantém o foco no slide */
-        }
-
-        h1, h2, h3 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; }
-
-        /* --- BACKGROUND ANIMATION --- */
-        .stars {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-            z-index: -1;
-        }
-
-        .grid-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
-            perspective: 500px;
-            z-index: -1;
-        }
-
-        /* --- SLIDE STRUCTURE --- */
-        .slide-container {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            display: none; /* Esconde todos os slides por padrão */
-        }
-
-        .slide-container.active {
-            display: flex;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .content-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 242, 255, 0.3);
-            border-radius: 20px;
-            padding: 50px;
-            max-width: 1000px;
-            width: 100%;
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
-            position: relative;
-        }
-
-        /* --- ELEMENTS --- */
-        .title-glow {
-            color: var(--cyber-blue);
-            text-shadow: 0 0 10px var(--cyber-blue);
-            margin-bottom: 20px;
-            font-size: 2.5rem;
-        }
-
-        .step-list { list-style: none; margin: 20px 0; }
-        .step-list li {
-            background: rgba(255, 255, 255, 0.03);
-            margin: 10px 0;
-            padding: 15px;
-            border-left: 4px solid var(--cyber-pink);
-            font-size: 1.1rem;
-        }
-
-        .code-block {
-            background: #000;
-            color: var(--cyber-green);
-            padding: 20px;
-            border-radius: 10px;
-            font-family: monospace;
-            border: 1px solid var(--cyber-green);
-            margin: 20px 0;
-        }
-
-        /* --- NAVIGATION --- */
-        .nav-buttons {
-            position: fixed;
-            bottom: 30px;
-            right: 50px;
-            display: flex;
-            gap: 20px;
-        }
-
-        .btn {
-            background: transparent;
-            border: 2px solid var(--cyber-blue);
-            color: var(--cyber-blue);
-            padding: 12px 25px;
-            cursor: pointer;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
-            transition: var(--transition);
-            text-transform: uppercase;
-        }
-
-        .btn:hover {
-            background: var(--cyber-blue);
-            color: #000;
-            box-shadow: 0 0 20px var(--cyber-blue);
-        }
-
-        /* --- PROFILE SETUP --- */
-        .profile-selection {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .avatar-option {
-            border: 2px solid transparent;
-            border-radius: 10px;
-            cursor: pointer;
-            padding: 10px;
-            text-align: center;
-            transition: var(--transition);
-        }
-
-        .avatar-option img { width: 80px; height: 80px; border-radius: 50%; }
-
-        .avatar-option.selected {
-            border-color: var(--cyber-pink);
-            background: rgba(255, 0, 234, 0.1);
-        }
-
-        .input-name {
-            width: 100%;
-            padding: 15px;
-            background: transparent;
-            border: 1px solid var(--cyber-blue);
-            color: #fff;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-
-        /* --- QUIZ --- */
-        .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .quiz-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--cyber-blue);
-            color: white;
-            padding: 15px;
-            text-align: left;
-            cursor: pointer;
-            border-radius: 8px;
-        }
-        .quiz-btn:hover { background: rgba(0, 242, 255, 0.1); }
-
-        .locked-screen { text-align: center; color: var(--cyber-pink); }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
-</head>
-<body>
-
-<div class="stars"></div>
-<div class="grid-bg"></div>
-
-<div class="slide-container active" id="slide-1">
-    <div class="content-card" style="text-align: center;">
-        <h1 class="title-glow" style="font-size: 4rem;">MISSÃO:<br>CIBERESPAÇO</h1>
-        <p>Bem-vindo, Recruta. Hoje vamos hackear os fundamentos da Lógica e do Arduino.</p>
-        <div style="margin-top: 40px; font-size: 5rem; color: var(--cyber-blue);">
-            <i class="fa-solid fa-user-shield"></i>
-        </div>
-    </div>
-</div>
-
-<div class="slide-container" id="slide-2">
-    <div class="content-card">
-        <h2 class="title-glow">01. Algoritmos</h2>
-        <p>Um algoritmo é como uma <strong>receita de bolo</strong>. São passos exatos que o computador deve seguir.</p>
-        <ul class="step-list">
-            <li><i class="fa-solid fa-forward"></i> Entrada: Os ingredientes.</li>
-            <li><i class="fa-solid fa-forward"></i> Processamento: O ato de bater e assar.</li>
-            <li><i class="fa-solid fa-forward"></i> Saída: O bolo pronto!</li>
-        </ul>
-        <p>No ciberespaço, tudo funciona com algoritmos: do seu jogo favorito ao GPS.</p>
-    </div>
-</div>
-
-<div class="slide-container" id="slide-3">
-    <div class="content-card">
-        <h2 class="title-glow">02. O Cérebro: Arduino</h2>
-        <p>O Arduino é uma placa que permite controlar coisas físicas (luzes, motores) usando código.</p>
-        <div style="display: flex; gap: 20px; align-items: center; margin-top: 20px;">
-            <div style="flex: 1;">
-                <p><strong>Pinos:</strong> São os braços do Arduino.</p>
-                <p><strong>Microcontrolador:</strong> É o processador central.</p>
-            </div>
-            <div style="flex: 1; text-align: center;">
-                <i class="fa-solid fa-microchip" style="font-size: 6rem; color: var(--cyber-pink);"></i>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="slide-container" id="slide-4">
-    <div class="content-card">
-        <h2 class="title-glow">03. Sintaxe Básica</h2>
-        <p>Veja como falamos com o Arduino:</p>
-        <div class="code-block">
-            void loop() { <br>
-            &nbsp;&nbsp;digitalWrite(13, HIGH); // Liga o LED <br>
-            &nbsp;&nbsp;delay(1000); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Espera 1s <br>
-            &nbsp;&nbsp;digitalWrite(13, LOW); &nbsp;// Desliga o LED <br>
-            }
-        </div>
-    </div>
-</div>
-
-<div class="slide-container" id="slide-5">
-    <div class="content-card">
-        <h2 class="title-glow">Identifique-se, Recruta</h2>
-        <input type="text" id="userName" class="input-name" placeholder="Digite seu Nome de Usuário">
-        <p>Escolha seu Avatar:</p>
-        <div class="profile-selection" id="avatarGrid">
-            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=1')">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=1" alt="Bot 1">
-            </div>
-            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=2')">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=2" alt="Bot 2">
-            </div>
-            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=3')">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=3" alt="Bot 3">
-            </div>
-            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=4')">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=4" alt="Bot 4">
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="slide-container" id="slide-6">
-    <div class="content-card" id="quizContent">
-        <h2 class="title-glow">Avaliação de Sistema</h2>
-        <div id="quizArea">
-            <p id="questionText">Aguardando início...</p>
-            <div class="quiz-options" id="optionsArea"></div>
-        </div>
-        <div id="lockArea" class="locked-screen" style="display: none;">
-            <i class="fa-solid fa-user-lock" style="font-size: 4rem; margin-bottom: 20px;"></i>
-            <h3>ACESSO BLOQUEADO</h3>
-            <p>Você já realizou este teste. O sistema não permite múltiplas tentativas.</p>
-            <button class="btn" style="margin-top:20px" onclick="downloadReport()">Baixar Meu Relatório</button>
-        </div>
-    </div>
-</div>
-
-<div class="slide-container" id="slide-7">
-    <div class="content-card" style="text-align: center;">
-        <h2 class="title-glow">Missão Cumprida</h2>
-        <p id="finalMessage"></p>
-        <i class="fa-solid fa-flag-checkered" style="font-size: 5rem; color: var(--cyber-green); margin-top: 30px;"></i>
-    </div>
-</div>
-
-<div class="nav-buttons">
-    <button class="btn" id="prevBtn" onclick="changeSlide(-1)">Voltar</button>
-    <button class="btn" id="nextBtn" onclick="changeSlide(1)">Próximo</button>
-</div>
-
-<script>
-    let currentSlide = 1;
-    const totalSlides = 7;
-    let selectedAvatar = "";
-    let score = 0;
-    
-    const quizData = [
-        { q: "O que é um algoritmo?", a: ["Um robô físico", "Uma sequência lógica de passos", "Uma marca de computador"], correct: 1 },
-        { q: "Qual comando liga um pino no Arduino?", a: ["digitalWrite(pin, HIGH)", "turnOn(pin)", "pinMode(INPUT)"], correct: 0 },
-        { q: "Onde o código do Arduino roda repetidamente?", a: ["void setup()", "void start()", "void loop()"], correct: 2 }
-    ];
-    let currentQuestion = 0;
-
-    function changeSlide(n) {
-        if (currentSlide === 5 && n === 1) {
+        function finishQuiz() {
             const name = document.getElementById('userName').value;
-            if (!name || !selectedAvatar) {
-                alert("Por favor, preencha seu nome e escolha um avatar!");
-                return;
-            }
-            checkLock();
+            const customPhoto = document.getElementById('userPhotoUrl').value;
+            const finalPhoto = customPhoto || userAvatar;
+            
+            localStorage.setItem('completed_' + name, true);
+            localStorage.setItem('score_' + name, score);
+            
+            document.getElementById('resultName').innerText = name;
+            document.getElementById('resultScore').innerText = `Pontuação: ${score} / ${questions.length}`;
+            document.getElementById('finalAvatar').innerHTML = `<img src="${finalPhoto}" style="width:100%">`;
+            
+            moveSlide(1);
         }
 
-        document.getElementById(`slide-${currentSlide}`).classList.remove('active');
-        currentSlide += n;
-        if (currentSlide < 1) currentSlide = 1;
-        if (currentSlide > totalSlides) currentSlide = totalSlides;
-        document.getElementById(`slide-${currentSlide}`).classList.add('active');
-        
-        if (currentSlide === 6) startQuiz();
-    }
+        function downloadReport() {
+            const name = document.getElementById('userName').value;
+            const data = new Date().toLocaleString();
+            const report = `
+=== RELATÓRIO DE MISSÃO: CYBERLOGIC ===
+RECRUTA: ${name}
+DATA: ${data}
+PONTUAÇÃO FINAL: ${score} de ${questions.length}
+APROVEITAMENTO: ${(score/questions.length)*100}%
 
-    function selectAvatar(el, url) {
-        document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
-        el.classList.add('selected');
-        selectedAvatar = url;
-    }
-
-    function checkLock() {
-        const name = document.getElementById('userName').value;
-        if (localStorage.getItem('quiz_done_' + name)) {
-            document.getElementById('quizArea').style.display = 'none';
-            document.getElementById('lockArea').style.display = 'block';
-            document.getElementById('nextBtn').style.display = 'none';
-        } else {
-            document.getElementById('quizArea').style.display = 'block';
-            document.getElementById('lockArea').style.display = 'none';
+STATUS: Missão Concluída com Sucesso.
+=======================================`;
+            
+            const blob = new Blob([report], {type: 'text/plain'});
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Relatorio_${name}.txt`;
+            a.click();
         }
-    }
-
-    function startQuiz() {
-        if (currentQuestion < quizData.length) {
-            const data = quizData[currentQuestion];
-            document.getElementById('questionText').innerText = data.q;
-            const optionsArea = document.getElementById('optionsArea');
-            optionsArea.innerHTML = "";
-            data.a.forEach((opt, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'quiz-btn';
-                btn.innerText = opt;
-                btn.onclick = () => nextQuestion(index);
-                optionsArea.appendChild(btn);
-            });
-        } else {
-            finishQuiz();
-        }
-    }
-
-    function nextQuestion(choice) {
-        if (choice === quizData[currentQuestion].correct) score++;
-        currentQuestion++;
-        startQuiz();
-    }
-
-    function finishQuiz() {
-        const name = document.getElementById('userName').value;
-        localStorage.setItem('quiz_done_' + name, true);
-        localStorage.setItem('quiz_score_' + name, score);
-        
-        document.getElementById('quizArea').innerHTML = `
-            <h3 style="color: var(--cyber-green)">Teste Concluído!</h3>
-            <p>Sua pontuação foi salva no banco de dados local.</p>
-            <p>Pressione 'Próximo' para finalizar.</p>
-        `;
-        document.getElementById('finalMessage').innerText = `Parabéns, ${name}! Você completou o treinamento com ${score}/${quizData.length} acertos.`;
-    }
-
-    function downloadReport() {
-        const name = document.getElementById('userName').value;
-        const savedScore = localStorage.getItem('quiz_score_' + name);
-        const text = `RELATÓRIO DE MISSÃO - CIBERESPAÇO\nESTUDANTE: ${name}\nACERTOS: ${savedScore} de ${quizData.length}\nDATA: ${new Date().toLocaleDateString()}`;
-        const blob = new Blob([text], { type: 'text/plain' });
-        const anchor = document.createElement('a');
-        anchor.download = `relatorio_${name}.txt`;
-        anchor.href = window.URL.createObjectURL(blob);
-        anchor.click();
-    }
-</script>
-
+    </script>
 </body>
 </html>
