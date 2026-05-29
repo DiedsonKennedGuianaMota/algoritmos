@@ -1,130 +1,792 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Quiz Gamificado — Algoritmos (4º ano)</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missão Ciberespaço: Lógica e Arduino</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --cyber-blue: #00f2ff;
+            --cyber-pink: #ff00ea;
+            --cyber-green: #00ff41;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --transition: all 0.4s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: #fff;
+            overflow: hidden; /* Mantém o foco no slide */
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; }
+
+        /* --- BACKGROUND ANIMATION --- */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -1;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            perspective: 500px;
+            z-index: -1;
+        }
+
+        /* --- SLIDE STRUCTURE --- */
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            display: none; /* Esconde todos os slides por padrão */
+        }
+
+        .slide-container.active {
+            display: flex;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .content-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
+            position: relative;
+        }
+
+        /* --- ELEMENTS --- */
+        .title-glow {
+            color: var(--cyber-blue);
+            text-shadow: 0 0 10px var(--cyber-blue);
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .step-list { list-style: none; margin: 20px 0; }
+        .step-list li {
+            background: rgba(255, 255, 255, 0.03);
+            margin: 10px 0;
+            padding: 15px;
+            border-left: 4px solid var(--cyber-pink);
+            font-size: 1.1rem;
+        }
+
+        .code-block {
+            background: #000;
+            color: var(--cyber-green);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            border: 1px solid var(--cyber-green);
+            margin: 20px 0;
+        }
+
+        /* --- NAVIGATION --- */
+        .nav-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 50px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            background: transparent;
+            border: 2px solid var(--cyber-blue);
+            color: var(--cyber-blue);
+            padding: 12px 25px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            transition: var(--transition);
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background: var(--cyber-blue);
+            color: #000;
+            box-shadow: 0 0 20px var(--cyber-blue);
+        }
+
+        /* --- PROFILE SETUP --- */
+        .profile-selection {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .avatar-option {
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            padding: 10px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .avatar-option img { width: 80px; height: 80px; border-radius: 50%; }
+
+        .avatar-option.selected {
+            border-color: var(--cyber-pink);
+            background: rgba(255, 0, 234, 0.1);
+        }
+
+        .input-name {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 1px solid var(--cyber-blue);
+            color: #fff;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        /* --- QUIZ --- */
+        .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .quiz-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--cyber-blue);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .quiz-btn:hover { background: rgba(0, 242, 255, 0.1); }
+
+        .locked-screen { text-align: center; color: var(--cyber-pink); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
-  <div class="wrap">
-    <header aria-label="Cabeçalho">
-      <div class="brand">
-        <span class="badge">EducaFácil — Quiz</span>
-        <span aria-live="polite" class="muted">Algoritmos para 4º ano</span>
-      </div>
-      <button id="toggle-contrast" class="ac-btn" aria-pressed="false" aria-label="Alternar alto contraste">
-        Alto contraste
-      </button>
-    </header>
 
-    <section class="game" role="main" aria-labelledby="h1">
-      <div class="stars" aria-hidden="true">
-        <span style="top:14%;left:6%;animation-delay:.2s"></span>
-        <span style="top:38%;left:88%;animation-delay:.6s"></span>
-        <span style="top:70%;left:20%;animation-delay:1s"></span>
-        <span style="top:82%;left:62%;animation-delay:1.4s"></span>
-      </div>
+<div class="stars"></div>
+<div class="grid-bg"></div>
 
-      <div class="hero">
-        <div>
-          <h1 id="h1">Introdução a Algoritmos e Repetições</h1>
-          <p>Responda e ganhe pontos. Acertar em sequência aumenta seu combo!</p>
-
-          <div class="statbar">
-            <span class="chip">Jogador: <span id="playerNameLabel">—</span></span>
-            <span class="chip">Pontuação: <span id="score" class="score">0</span></span>
-            <span class="chip">Combo: <span id="combo">x0</span></span>
-            <span class="chip">Questão <span id="qnum">0</span>/<span id="qtotal">0</span></span>
-            <span class="chip">Acertos: <span id="hits">0</span></span>
-          </div>
-
-          <div class="progress" aria-label="Progresso das questões" title="Progresso das questões">
-            <span id="progressbar"></span>
-          </div>
+<div class="slide-container active" id="slide-1">
+    <div class="content-card" style="text-align: center;">
+        <h1 class="title-glow" style="font-size: 4rem;">MISSÃO:<br>CIBERESPAÇO</h1>
+        <p>Bem-vindo, Recruta. Hoje vamos hackear os fundamentos da Lógica e do Arduino.</p>
+        <div style="margin-top: 40px; font-size: 5rem; color: var(--cyber-blue);">
+            <i class="fa-solid fa-user-shield"></i>
         </div>
-
-        <div class="start" id="startBox">
-  <div class="start-inner">
-    <p class="start-title">Digite seu nome e escolha um avatar para começar.</p>
-
-    <div class="start-row">
-      <input id="playerName" class="name-input" type="text" maxlength="20"
-             placeholder="Seu nome ou apelido" />
     </div>
-
-    <div class="start-row start-buttons">
-      <button id="startBtn" class="pill primary">Iniciar</button>
-      <button id="reviewBtn" class="pill ghost" aria-label="Abrir relatório da última sessão">
-        Último relatório
-      </button>
-      <button id="rankBtn" class="pill ghost" aria-label="Abrir ranking geral">
-        Ver ranking
-      </button>
-    </div>
-
-    <!-- os avatares serão inseridos via JS logo abaixo desta linha -->
-  </div>
 </div>
 
-      </div>
+<div class="slide-container" id="slide-2">
+    <div class="content-card">
+        <h2 class="title-glow">01. Algoritmos</h2>
+        <p>Um algoritmo é como uma <strong>receita de bolo</strong>. São passos exatos que o computador deve seguir.</p>
+        <ul class="step-list">
+            <li><i class="fa-solid fa-forward"></i> Entrada: Os ingredientes.</li>
+            <li><i class="fa-solid fa-forward"></i> Processamento: O ato de bater e assar.</li>
+            <li><i class="fa-solid fa-forward"></i> Saída: O bolo pronto!</li>
+        </ul>
+        <p>No ciberespaço, tudo funciona com algoritmos: do seu jogo favorito ao GPS.</p>
+    </div>
+</div>
 
-      <div class="main">
-        <article class="card" aria-live="polite">
-          <h2 class="q-title" id="qtitle">Clique em Iniciar para começar.</h2>
-          <div class="answers" id="answers" role="group" aria-labelledby="qtitle"></div>
-
-          <div class="controls">
-            <div class="info-text">
-              Dica: pense sempre nos passos em ordem, como uma receita.
+<div class="slide-container" id="slide-3">
+    <div class="content-card">
+        <h2 class="title-glow">02. O Cérebro: Arduino</h2>
+        <p>O Arduino é uma placa que permite controlar coisas físicas (luzes, motores) usando código.</p>
+        <div style="display: flex; gap: 20px; align-items: center; margin-top: 20px;">
+            <div style="flex: 1;">
+                <p><strong>Pinos:</strong> São os braços do Arduino.</p>
+                <p><strong>Microcontrolador:</strong> É o processador central.</p>
             </div>
-            <div class="foot">
-              <button id="skipBtn" class="pill" disabled>Pular</button>
-              <button id="nextBtn" class="pill primary" disabled>Próxima</button>
+            <div style="flex: 1; text-align: center;">
+                <i class="fa-solid fa-microchip" style="font-size: 6rem; color: var(--cyber-pink);"></i>
             </div>
-          </div>
-        </article>
-      </div>
-    </section>
-  </div>
-
-  <!-- Modal Feedback -->
-  <div class="modal-backdrop" id="fb-backdrop" role="dialog" aria-modal="true"
-       aria-labelledby="fb-title" aria-hidden="true">
-    <div class="modal" id="fb-modal">
-      <header><strong id="fb-title">Feedback</strong></header>
-      <div class="content" id="fb-content"></div>
-      <div class="actions">
-        <button class="pill" id="fb-close">Fechar</button>
-      </div>
+        </div>
     </div>
-  </div>
+</div>
 
-  <!-- Modal Relatório -->
-  <div class="modal-backdrop" id="rep-backdrop" role="dialog" aria-modal="true"
-       aria-labelledby="rep-title" aria-hidden="true">
-    <div class="modal" id="rep-modal">
-      <header><strong id="rep-title">Relatório da sessão</strong></header>
-      <div class="content" id="rep-content"></div>
-      <div class="actions">
-        <button class="pill" id="rep-close">Fechar</button>
-        <button class="pill primary" id="rep-download">Baixar .json</button>
-      </div>
+<div class="slide-container" id="slide-4">
+    <div class="content-card">
+        <h2 class="title-glow">03. Sintaxe Básica</h2>
+        <p>Veja como falamos com o Arduino:</p>
+        <div class="code-block">
+            void loop() { <br>
+            &nbsp;&nbsp;digitalWrite(13, HIGH); // Liga o LED <br>
+            &nbsp;&nbsp;delay(1000); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Espera 1s <br>
+            &nbsp;&nbsp;digitalWrite(13, LOW); &nbsp;// Desliga o LED <br>
+            }
+        </div>
     </div>
-  </div>
+</div>
 
-  <!-- Modal Ranking -->
-  <div class="modal-backdrop" id="rank-backdrop" role="dialog" aria-modal="true"
-       aria-labelledby="rank-title" aria-hidden="true">
-    <div class="modal" id="rank-modal">
-      <header><strong id="rank-title">Ranking geral</strong></header>
-      <div class="content" id="rank-content"></div>
-      <div class="actions">
-        <button class="pill" id="rank-close">Fechar</button>
-      </div>
+<div class="slide-container" id="slide-5">
+    <div class="content-card">
+        <h2 class="title-glow">Identifique-se, Recruta</h2>
+        <input type="text" id="userName" class="input-name" placeholder="Digite seu Nome de Usuário">
+        <p>Escolha seu Avatar:</p>
+        <div class="profile-selection" id="avatarGrid">
+            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=1')">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=1" alt="Bot 1">
+            </div>
+            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=2')">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=2" alt="Bot 2">
+            </div>
+            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=3')">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=3" alt="Bot 3">
+            </div>
+            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=4')">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=4" alt="Bot 4">
+            </div>
+        </div>
     </div>
-  </div>
+</div>
 
-  <script src="app.js"></script>
+<div class="slide-container" id="slide-6">
+    <div class="content-card" id="quizContent">
+        <h2 class="title-glow">Avaliação de Sistema</h2>
+        <div id="quizArea">
+            <p id="questionText">Aguardando início...</p>
+            <div class="quiz-options" id="optionsArea"></div>
+        </div>
+        <div id="lockArea" class="locked-screen" style="display: none;">
+            <i class="fa-solid fa-user-lock" style="font-size: 4rem; margin-bottom: 20px;"></i>
+            <h3>ACESSO BLOQUEADO</h3>
+            <p>Você já realizou este teste. O sistema não permite múltiplas tentativas.</p>
+            <button class="btn" style="margin-top:20px" onclick="downloadReport()">Baixar Meu Relatório</button>
+        </div>
+    </div>
+</div>
+
+<div class="slide-container" id="slide-7">
+    <div class="content-card" style="text-align: center;">
+        <h2 class="title-glow">Missão Cumprida</h2>
+        <p id="finalMessage"></p>
+        <i class="fa-solid fa-flag-checkered" style="font-size: 5rem; color: var(--cyber-green); margin-top: 30px;"></i>
+    </div>
+</div>
+
+<div class="nav-buttons">
+    <button class="btn" id="prevBtn" onclick="changeSlide(-1)">Voltar</button>
+    <button class="btn" id="nextBtn" onclick="changeSlide(1)">Próximo</button>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 7;
+    let selectedAvatar = "";
+    let score = 0;
+    
+    const quizData = [
+        { q: "O que é um algoritmo?", a: ["Um robô físico", "Uma sequência lógica de passos", "Uma marca de computador"], correct: 1 },
+        { q: "Qual comando liga um pino no Arduino?", a: ["digitalWrite(pin, HIGH)", "turnOn(pin)", "pinMode(INPUT)"], correct: 0 },
+        { q: "Onde o código do Arduino roda repetidamente?", a: ["void setup()", "void start()", "void loop()"], correct: 2 }
+    ];
+    let currentQuestion = 0;
+
+    function changeSlide(n) {
+        if (currentSlide === 5 && n === 1) {
+            const name = document.getElementById('userName').value;
+            if (!name || !selectedAvatar) {
+                alert("Por favor, preencha seu nome e escolha um avatar!");
+                return;
+            }
+            checkLock();
+        }
+
+        document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+        currentSlide += n;
+        if (currentSlide < 1) currentSlide = 1;
+        if (currentSlide > totalSlides) currentSlide = totalSlides;
+        document.getElementById(`slide-${currentSlide}`).classList.add('active');
+        
+        if (currentSlide === 6) startQuiz();
+    }
+
+    function selectAvatar(el, url) {
+        document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedAvatar = url;
+    }
+
+    function checkLock() {
+        const name = document.getElementById('userName').value;
+        if (localStorage.getItem('quiz_done_' + name)) {
+            document.getElementById('quizArea').style.display = 'none';
+            document.getElementById('lockArea').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+        } else {
+            document.getElementById('quizArea').style.display = 'block';
+            document.getElementById('lockArea').style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        if (currentQuestion < quizData.length) {
+            const data = quizData[currentQuestion];
+            document.getElementById('questionText').innerText = data.q;
+            const optionsArea = document.getElementById('optionsArea');
+            optionsArea.innerHTML = "";
+            data.a.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-btn';
+                btn.innerText = opt;
+                btn.onclick = () => nextQuestion(index);
+                optionsArea.appendChild(btn);
+            });
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function nextQuestion(choice) {
+        if (choice === quizData[currentQuestion].correct) score++;
+        currentQuestion++;
+        startQuiz();
+    }
+
+    function finishQuiz() {
+        const name = document.getElementById('userName').value;
+        localStorage.setItem('quiz_done_' + name, true);
+        localStorage.setItem('quiz_score_' + name, score);
+        
+        document.getElementById('quizArea').innerHTML = `
+            <h3 style="color: var(--cyber-green)">Teste Concluído!</h3>
+            <p>Sua pontuação foi salva no banco de dados local.</p>
+            <p>Pressione 'Próximo' para finalizar.</p>
+        `;
+        document.getElementById('finalMessage').innerText = `Parabéns, ${name}! Você completou o treinamento com ${score}/${quizData.length} acertos.`;
+    }
+
+    function downloadReport() {
+        const name = document.getElementById('userName').value;
+        const savedScore = localStorage.getItem('quiz_score_' + name);
+        const text = `RELATÓRIO DE MISSÃO - CIBERESPAÇO\nESTUDANTE: ${name}\nACERTOS: ${savedScore} de ${quizData.length}\nDATA: ${new Date().toLocaleDateString()}`;
+        const blob = new Blob([text], { type: 'text/plain' });
+        const anchor = document.createElement('a');
+        anchor.download = `relatorio_${name}.txt`;
+        anchor.href = window.URL.createObjectURL(blob);
+        anchor.click();
+    }
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missão Ciberespaço: Lógica e Arduino</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --cyber-blue: #00f2ff;
+            --cyber-pink: #ff00ea;
+            --cyber-green: #00ff41;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --transition: all 0.4s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: #fff;
+            overflow: hidden; /* Mantém o foco no slide */
+        }
+
+        h1, h2, h3 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; }
+
+        /* --- BACKGROUND ANIMATION --- */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -1;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            perspective: 500px;
+            z-index: -1;
+        }
+
+        /* --- SLIDE STRUCTURE --- */
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            display: none; /* Esconde todos os slides por padrão */
+        }
+
+        .slide-container.active {
+            display: flex;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .content-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
+            position: relative;
+        }
+
+        /* --- ELEMENTS --- */
+        .title-glow {
+            color: var(--cyber-blue);
+            text-shadow: 0 0 10px var(--cyber-blue);
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .step-list { list-style: none; margin: 20px 0; }
+        .step-list li {
+            background: rgba(255, 255, 255, 0.03);
+            margin: 10px 0;
+            padding: 15px;
+            border-left: 4px solid var(--cyber-pink);
+            font-size: 1.1rem;
+        }
+
+        .code-block {
+            background: #000;
+            color: var(--cyber-green);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            border: 1px solid var(--cyber-green);
+            margin: 20px 0;
+        }
+
+        /* --- NAVIGATION --- */
+        .nav-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 50px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            background: transparent;
+            border: 2px solid var(--cyber-blue);
+            color: var(--cyber-blue);
+            padding: 12px 25px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            transition: var(--transition);
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background: var(--cyber-blue);
+            color: #000;
+            box-shadow: 0 0 20px var(--cyber-blue);
+        }
+
+        /* --- PROFILE SETUP --- */
+        .profile-selection {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .avatar-option {
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            padding: 10px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .avatar-option img { width: 80px; height: 80px; border-radius: 50%; }
+
+        .avatar-option.selected {
+            border-color: var(--cyber-pink);
+            background: rgba(255, 0, 234, 0.1);
+        }
+
+        .input-name {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 1px solid var(--cyber-blue);
+            color: #fff;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        /* --- QUIZ --- */
+        .quiz-options { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .quiz-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--cyber-blue);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .quiz-btn:hover { background: rgba(0, 242, 255, 0.1); }
+
+        .locked-screen { text-align: center; color: var(--cyber-pink); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="stars"></div>
+<div class="grid-bg"></div>
+
+<div class="slide-container active" id="slide-1">
+    <div class="content-card" style="text-align: center;">
+        <h1 class="title-glow" style="font-size: 4rem;">MISSÃO:<br>CIBERESPAÇO</h1>
+        <p>Bem-vindo, Recruta. Hoje vamos hackear os fundamentos da Lógica e do Arduino.</p>
+        <div style="margin-top: 40px; font-size: 5rem; color: var(--cyber-blue);">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
+    </div>
+</div>
+
+<div class="slide-container" id="slide-2">
+    <div class="content-card">
+        <h2 class="title-glow">01. Algoritmos</h2>
+        <p>Um algoritmo é como uma <strong>receita de bolo</strong>. São passos exatos que o computador deve seguir.</p>
+        <ul class="step-list">
+            <li><i class="fa-solid fa-forward"></i> Entrada: Os ingredientes.</li>
+            <li><i class="fa-solid fa-forward"></i> Processamento: O ato de bater e assar.</li>
+            <li><i class="fa-solid fa-forward"></i> Saída: O bolo pronto!</li>
+        </ul>
+        <p>No ciberespaço, tudo funciona com algoritmos: do seu jogo favorito ao GPS.</p>
+    </div>
+</div>
+
+<div class="slide-container" id="slide-3">
+    <div class="content-card">
+        <h2 class="title-glow">02. O Cérebro: Arduino</h2>
+        <p>O Arduino é uma placa que permite controlar coisas físicas (luzes, motores) usando código.</p>
+        <div style="display: flex; gap: 20px; align-items: center; margin-top: 20px;">
+            <div style="flex: 1;">
+                <p><strong>Pinos:</strong> São os braços do Arduino.</p>
+                <p><strong>Microcontrolador:</strong> É o processador central.</p>
+            </div>
+            <div style="flex: 1; text-align: center;">
+                <i class="fa-solid fa-microchip" style="font-size: 6rem; color: var(--cyber-pink);"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="slide-container" id="slide-4">
+    <div class="content-card">
+        <h2 class="title-glow">03. Sintaxe Básica</h2>
+        <p>Veja como falamos com o Arduino:</p>
+        <div class="code-block">
+            void loop() { <br>
+            &nbsp;&nbsp;digitalWrite(13, HIGH); // Liga o LED <br>
+            &nbsp;&nbsp;delay(1000); &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Espera 1s <br>
+            &nbsp;&nbsp;digitalWrite(13, LOW); &nbsp;// Desliga o LED <br>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="slide-container" id="slide-5">
+    <div class="content-card">
+        <h2 class="title-glow">Identifique-se, Recruta</h2>
+        <input type="text" id="userName" class="input-name" placeholder="Digite seu Nome de Usuário">
+        <p>Escolha seu Avatar:</p>
+        <div class="profile-selection" id="avatarGrid">
+            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=1')">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=1" alt="Bot 1">
+            </div>
+            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=2')">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=2" alt="Bot 2">
+            </div>
+            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=3')">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=3" alt="Bot 3">
+            </div>
+            <div class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=4')">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=4" alt="Bot 4">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="slide-container" id="slide-6">
+    <div class="content-card" id="quizContent">
+        <h2 class="title-glow">Avaliação de Sistema</h2>
+        <div id="quizArea">
+            <p id="questionText">Aguardando início...</p>
+            <div class="quiz-options" id="optionsArea"></div>
+        </div>
+        <div id="lockArea" class="locked-screen" style="display: none;">
+            <i class="fa-solid fa-user-lock" style="font-size: 4rem; margin-bottom: 20px;"></i>
+            <h3>ACESSO BLOQUEADO</h3>
+            <p>Você já realizou este teste. O sistema não permite múltiplas tentativas.</p>
+            <button class="btn" style="margin-top:20px" onclick="downloadReport()">Baixar Meu Relatório</button>
+        </div>
+    </div>
+</div>
+
+<div class="slide-container" id="slide-7">
+    <div class="content-card" style="text-align: center;">
+        <h2 class="title-glow">Missão Cumprida</h2>
+        <p id="finalMessage"></p>
+        <i class="fa-solid fa-flag-checkered" style="font-size: 5rem; color: var(--cyber-green); margin-top: 30px;"></i>
+    </div>
+</div>
+
+<div class="nav-buttons">
+    <button class="btn" id="prevBtn" onclick="changeSlide(-1)">Voltar</button>
+    <button class="btn" id="nextBtn" onclick="changeSlide(1)">Próximo</button>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 7;
+    let selectedAvatar = "";
+    let score = 0;
+    
+    const quizData = [
+        { q: "O que é um algoritmo?", a: ["Um robô físico", "Uma sequência lógica de passos", "Uma marca de computador"], correct: 1 },
+        { q: "Qual comando liga um pino no Arduino?", a: ["digitalWrite(pin, HIGH)", "turnOn(pin)", "pinMode(INPUT)"], correct: 0 },
+        { q: "Onde o código do Arduino roda repetidamente?", a: ["void setup()", "void start()", "void loop()"], correct: 2 }
+    ];
+    let currentQuestion = 0;
+
+    function changeSlide(n) {
+        if (currentSlide === 5 && n === 1) {
+            const name = document.getElementById('userName').value;
+            if (!name || !selectedAvatar) {
+                alert("Por favor, preencha seu nome e escolha um avatar!");
+                return;
+            }
+            checkLock();
+        }
+
+        document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+        currentSlide += n;
+        if (currentSlide < 1) currentSlide = 1;
+        if (currentSlide > totalSlides) currentSlide = totalSlides;
+        document.getElementById(`slide-${currentSlide}`).classList.add('active');
+        
+        if (currentSlide === 6) startQuiz();
+    }
+
+    function selectAvatar(el, url) {
+        document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedAvatar = url;
+    }
+
+    function checkLock() {
+        const name = document.getElementById('userName').value;
+        if (localStorage.getItem('quiz_done_' + name)) {
+            document.getElementById('quizArea').style.display = 'none';
+            document.getElementById('lockArea').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'none';
+        } else {
+            document.getElementById('quizArea').style.display = 'block';
+            document.getElementById('lockArea').style.display = 'none';
+        }
+    }
+
+    function startQuiz() {
+        if (currentQuestion < quizData.length) {
+            const data = quizData[currentQuestion];
+            document.getElementById('questionText').innerText = data.q;
+            const optionsArea = document.getElementById('optionsArea');
+            optionsArea.innerHTML = "";
+            data.a.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-btn';
+                btn.innerText = opt;
+                btn.onclick = () => nextQuestion(index);
+                optionsArea.appendChild(btn);
+            });
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function nextQuestion(choice) {
+        if (choice === quizData[currentQuestion].correct) score++;
+        currentQuestion++;
+        startQuiz();
+    }
+
+    function finishQuiz() {
+        const name = document.getElementById('userName').value;
+        localStorage.setItem('quiz_done_' + name, true);
+        localStorage.setItem('quiz_score_' + name, score);
+        
+        document.getElementById('quizArea').innerHTML = `
+            <h3 style="color: var(--cyber-green)">Teste Concluído!</h3>
+            <p>Sua pontuação foi salva no banco de dados local.</p>
+            <p>Pressione 'Próximo' para finalizar.</p>
+        `;
+        document.getElementById('finalMessage').innerText = `Parabéns, ${name}! Você completou o treinamento com ${score}/${quizData.length} acertos.`;
+    }
+
+    function downloadReport() {
+        const name = document.getElementById('userName').value;
+        const savedScore = localStorage.getItem('quiz_score_' + name);
+        const text = `RELATÓRIO DE MISSÃO - CIBERESPAÇO\nESTUDANTE: ${name}\nACERTOS: ${savedScore} de ${quizData.length}\nDATA: ${new Date().toLocaleDateString()}`;
+        const blob = new Blob([text], { type: 'text/plain' });
+        const anchor = document.createElement('a');
+        anchor.download = `relatorio_${name}.txt`;
+        anchor.href = window.URL.createObjectURL(blob);
+        anchor.click();
+    }
+</script>
+
 </body>
 </html>
